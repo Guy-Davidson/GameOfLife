@@ -6,11 +6,21 @@ const app: Application = express();
 app.use(express.urlencoded({extended: true}))
 app.use(express.json())
 
-const add = (a: number, b: number) => a + b
+app.use((_, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', '*');
+    res.setHeader('Access-Control-Allow-Headers', '*');
+    next();
+});
+
+app.get('/query', (req: Request, res: Response) => {
+    let { number } = req.query
+    //@ts-ignore
+    res.send((parseInt(number) + 1).toString())
+})
 
 app.get('/', (req: Request, res: Response) => {
-    console.log(add(99,1))
-    res.send('hello world. greatest.')
+    res.send('Greatest')
 })
 
 const PORT = process.env.PORT || 5000
