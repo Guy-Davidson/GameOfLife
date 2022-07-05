@@ -44,7 +44,6 @@ const Controller = () => {
     const [isSettingUp, setIsSettingUp] = (0, recoil_1.useRecoilState)(atoms_1.IsSettingUpAtom);
     const [config, setConfig] = (0, recoil_1.useRecoilState)(atoms_1.ConfigAtom);
     const [isRunning, setIsRunning] = (0, recoil_1.useRecoilState)(atoms_1.IsRunningAtom);
-    const boardState = (0, MainAPI_1.GetBoardStateQuery)(gameID, isSettingUp, isRunning);
     const handleInitClick = () => __awaiter(void 0, void 0, void 0, function* () {
         let gameID = (0, uuid_1.v4)();
         let res = yield (0, MainAPI_1.PostNewGame)(gameID);
@@ -78,6 +77,7 @@ const Controller = () => {
         setIsRunning(false);
         setConfig(new Array());
         setGameID('');
+        (0, MainAPI_1.DeleteGame)(gameID);
     };
     return ((0, jsx_runtime_1.jsx)(StyledController, { children: !gameID ?
             (0, jsx_runtime_1.jsx)(Button, Object.assign({ onClick: handleInitClick }, { children: "Setup a new Game" }))

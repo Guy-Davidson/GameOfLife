@@ -4,17 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const algo_1 = require("./algo");
 const app = (0, express_1.default)();
 const stateStore = {};
-const nextBoard = (board) => {
-    if (!board)
-        return;
-    for (let i = 0; i < board.length; i++) {
-        for (let j = 0; j < board[0].length; j++) {
-            board[i][j] = Math.random() > .5 ? 1 : 0;
-        }
-    }
-};
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use(express_1.default.json());
 app.use((_, res, next) => {
@@ -23,7 +15,7 @@ app.use((_, res, next) => {
     res.setHeader('Access-Control-Allow-Headers', '*');
     next();
 });
-app.post('/init/id', (req, res) => {
+app.post('/game/init/id', (req, res) => {
     let { gameID } = req.query;
     if (typeof gameID !== 'string') {
         res.send("bad");
@@ -34,7 +26,7 @@ app.post('/init/id', (req, res) => {
         res.send("ok");
     }
 });
-app.post('/init/config', (req, res) => {
+app.post('/game/init/config', (req, res) => {
     let { gameID, config } = req.query;
     if (typeof gameID !== 'string' || gameID.length === 0 || !(gameID in stateStore)) {
         res.send("bad");
@@ -54,14 +46,23 @@ app.post('/init/config', (req, res) => {
     stateStore[gameID] = { gameID, next: newBoard };
     res.send("ok");
 });
-app.get('/next', (req, res) => {
+app.get('/game/next', (req, res) => {
     let { gameID } = req.query;
     if (typeof gameID !== 'string' || !(gameID in stateStore)) {
         res.send("bad");
         return;
     }
     res.send(stateStore[gameID].next);
-    nextBoard(stateStore[gameID].next);
+    (0, algo_1.nextBoard)(stateStore[gameID].next);
+});
+app.delete('/game', (req, res) => {
+    let { gameID } = req.query;
+    if (typeof gameID !== 'string' || !(gameID in stateStore)) {
+        res.send("bad");
+        return;
+    }
+    delete stateStore[gameID];
+    res.send("ok");
 });
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

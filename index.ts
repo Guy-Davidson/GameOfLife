@@ -1,4 +1,5 @@
-import express, { Application, Request, Response, NextFunction } from 'express'
+import express, { Application, Request, Response } from 'express'
+import { nextBoard } from './algo';
 
 const app: Application = express();
 
@@ -9,15 +10,7 @@ interface Game {
 
 const stateStore: { [key: string]: Game} = {}
 
-const nextBoard = (board: number[][] | null) => {
-    if(!board) return
 
-    for(let i = 0; i < board.length; i++) {
-        for(let j = 0; j < board[0].length; j++) {
-            board[i][j] = Math.random() > .5 ? 1 : 0
-        }
-    }
-}
 
 app.use(express.urlencoded({extended: true}))
 app.use(express.json())
@@ -29,7 +22,7 @@ app.use((_, res, next) => {
     next();
 });
 
-app.post('/init/id', (req: Request, res: Response) => {
+app.post('/game/init/id', (req: Request, res: Response) => {
     let { gameID } = req.query    
 
     if(typeof gameID !== 'string') {
@@ -43,7 +36,7 @@ app.post('/init/id', (req: Request, res: Response) => {
     }
 })
 
-app.post('/init/config', (req: Request, res: Response) => {
+app.post('/game/init/config', (req: Request, res: Response) => {
     let { gameID, config } = req.query  
     
     if(typeof gameID !== 'string' || gameID.length === 0 || !(gameID in stateStore)) {
@@ -70,7 +63,7 @@ app.post('/init/config', (req: Request, res: Response) => {
     res.send("ok")
 })
 
-app.get('/next', (req: Request, res: Response) => {
+app.get('/game/next', (req: Request, res: Response) => {
     let { gameID } = req.query    
 
     if(typeof gameID !== 'string' || !(gameID in stateStore)) {
@@ -81,6 +74,19 @@ app.get('/next', (req: Request, res: Response) => {
     res.send(stateStore[gameID].next)
     
     nextBoard(stateStore[gameID].next)
+})
+
+app.delete('/game', (req: Request, res: Response) => {
+    let { gameID } = req.query    
+
+    if(typeof gameID !== 'string' || !(gameID in stateStore)) {
+        res.send("bad")
+        return 
+    }
+
+    delete stateStore[gameID]
+
+    res.send("ok")
 })
 
 const PORT = process.env.PORT || 5000

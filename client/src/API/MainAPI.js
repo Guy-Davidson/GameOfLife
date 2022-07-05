@@ -11,7 +11,7 @@ export const GetBoardStateQuery = (gameID, isSettingUp, isRunning) => {
     return (
         useQuery(['BoardState', gameID], () => 
             axios
-                .get(`${API_ROOT_PATH}/next?gameID=${gameID}`)
+                .get(`${API_ROOT_PATH}/game/next?gameID=${gameID}`)
                 .then(res => res.data)
             , 
             {
@@ -20,7 +20,7 @@ export const GetBoardStateQuery = (gameID, isSettingUp, isRunning) => {
                 cacheTime: 5000,
                 enabled: Boolean(gameID) && !isSettingUp,
                 retry: 3,
-                refetchInterval: isRunning ? 1000 : false
+                refetchInterval: isRunning ? 100 : false
             }
         )
     )
@@ -28,14 +28,21 @@ export const GetBoardStateQuery = (gameID, isSettingUp, isRunning) => {
 
 export const PostNewGame = async (gameID) => {
     return await axios
-        .post(`${API_ROOT_PATH}/init/id?gameID=${gameID}`)
+        .post(`${API_ROOT_PATH}/game/init/id?gameID=${gameID}`)
         .then(res => res.data)
         .catch(e => handleError(e))
 }
 
 export const PostGameConfig = async (gameID, config) => {
     return await axios
-        .post(`${API_ROOT_PATH}/init/config?gameID=${gameID}&config=${config}`)
+        .post(`${API_ROOT_PATH}/game/init/config?gameID=${gameID}&config=${config}`)
+        .then(res => res.data)
+        .catch(e => handleError(e))
+}
+
+export const DeleteGame = async (gameID) => {
+    return await axios
+        .delete(`${API_ROOT_PATH}/game?gameID=${gameID}`)
         .then(res => res.data)
         .catch(e => handleError(e))
 }
