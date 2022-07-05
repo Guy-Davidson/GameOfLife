@@ -5,7 +5,7 @@ import { v4 as uuid } from 'uuid';
 import { useRecoilState } from "recoil"
 import { GameIDAtom, IsSettingUpAtom, ConfigAtom, IsRunningAtom } from "../Atoms/atoms"
 
-import { PostNewGame, PostGameConfig, DeleteGame } from "../API/MainAPI";
+import { PostNewGame, PostGameConfig, DeleteGame, GetBoardStateQuery } from "../API/MainAPI";
 
 import { queryClient } from "../App";
 
@@ -14,6 +14,8 @@ const Controller: React.FC = () => {
     const [isSettingUp, setIsSettingUp] = useRecoilState(IsSettingUpAtom)
     const [config, setConfig] = useRecoilState(ConfigAtom)
     const [isRunning, setIsRunning] = useRecoilState(IsRunningAtom)
+
+    const boardState = GetBoardStateQuery(gameID, isSettingUp, isRunning)
 
     const handleInitClick = async () => {
         let gameID = uuid()
@@ -67,6 +69,7 @@ const Controller: React.FC = () => {
                 </SetupWrapper>                
             :
                 <>
+                <GenWrapper>{`Generations: ${boardState.isSuccess && boardState.data.gen}`}</GenWrapper>
                 <Button isActive={!isRunning} onClick={handleNextClick}>next</Button>
                 <Button isActive={!isRunning} onClick={handleStartClick}>start</Button>
                 <Button isActive={isRunning} onClick={handleStopClick}>stop</Button>
@@ -124,6 +127,10 @@ const SetupWrapper = styled.div`
 const Instraction = styled.div`
     font-size: 2rem;
     margin-right: 3rem;
+`
+
+const GenWrapper = styled.div`
+    font-size: 1.6rem;
 `
 
 export default Controller

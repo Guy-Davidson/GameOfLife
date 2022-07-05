@@ -43,7 +43,7 @@ const Square = (props) => {
                         [...prev, [i, j]]);
             }
         }, isActive: (isSettingUp && config.some(s => s[0] === i && s[1] === j)) ||
-            (gameID && !isSettingUp && boardState.isSuccess && boardState.data[i][j]), isClickable: isSettingUp }));
+            (gameID && !isSettingUp && boardState.isSuccess && boardState.data.board[i][j]), isClickable: isSettingUp }));
 };
 const StyledSquare = styled_components_1.default.div `
     border-style: solid;

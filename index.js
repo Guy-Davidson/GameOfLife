@@ -22,7 +22,7 @@ app.post('/game/init/id', (req, res) => {
         return;
     }
     if (!(gameID in stateStore)) {
-        stateStore[gameID] = { gameID, next: null };
+        stateStore[gameID] = { gameID, next: null, gen: 0 };
         res.send("ok");
     }
 });
@@ -43,7 +43,7 @@ app.post('/game/init/config', (req, res) => {
         let j = parseInt(configArr[idx + 1]);
         newBoard[i][j] = 1;
     }
-    stateStore[gameID] = { gameID, next: newBoard };
+    stateStore[gameID] = { gameID, next: newBoard, gen: 0 };
     res.send("ok");
 });
 app.get('/game/next', (req, res) => {
@@ -52,7 +52,8 @@ app.get('/game/next', (req, res) => {
         res.send("bad");
         return;
     }
-    res.send(stateStore[gameID].next);
+    res.send({ board: stateStore[gameID].next, gen: stateStore[gameID].gen });
+    stateStore[gameID].gen += 1;
     (0, algo_1.nextBoard)(stateStore[gameID].next);
 });
 app.delete('/game', (req, res) => {

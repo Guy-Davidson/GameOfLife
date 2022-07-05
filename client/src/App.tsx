@@ -11,9 +11,6 @@ import { LightTheme } from './Styles/Themes'
 import { QueryClientProvider, QueryClient } from 'react-query'
 
 //@ts-ignore
-import { GetBoardStateQuery } from './API/MainAPI'
-
-//@ts-ignore
 import { ExplainAtom } from './Atoms/atoms'
 
 import { useRecoilState } from 'recoil'

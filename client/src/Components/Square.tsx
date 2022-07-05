@@ -33,7 +33,7 @@ const Square: React.FC<Props> = (props) => {
             }}
             isActive={
                     (isSettingUp && config.some(s => s[0] === i && s[1] === j)) ||
-                    (gameID && !isSettingUp && boardState.isSuccess && boardState.data[i][j])
+                    (gameID && !isSettingUp && boardState.isSuccess && boardState.data.board[i][j])
                 }
             isClickable={isSettingUp}
         >

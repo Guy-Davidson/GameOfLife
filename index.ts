@@ -6,6 +6,7 @@ const app: Application = express();
 interface Game {
     gameID: string,
     next: number[][] | null
+    gen: number
 }
 
 const stateStore: { [key: string]: Game} = {}
@@ -31,7 +32,7 @@ app.post('/game/init/id', (req: Request, res: Response) => {
     }
 
     if(!(gameID in stateStore)) {
-        stateStore[gameID] = { gameID, next: null }
+        stateStore[gameID] = { gameID, next: null, gen: 0 }
         res.send("ok")
     }
 })
@@ -58,7 +59,7 @@ app.post('/game/init/config', (req: Request, res: Response) => {
         newBoard[i][j] = 1
     }
 
-    stateStore[gameID] = { gameID, next: newBoard }
+    stateStore[gameID] = { gameID, next: newBoard, gen: 0 }
 
     res.send("ok")
 })
@@ -71,8 +72,9 @@ app.get('/game/next', (req: Request, res: Response) => {
         return 
     }
 
-    res.send(stateStore[gameID].next)
+    res.send({board: stateStore[gameID].next, gen: stateStore[gameID].gen})
     
+    stateStore[gameID].gen += 1
     nextBoard(stateStore[gameID].next)
 })
 
