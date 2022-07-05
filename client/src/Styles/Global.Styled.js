@@ -15,7 +15,6 @@ const GlobalStyles = createGlobalStyle`
         font-family: 'Poppins', 'Franklin Gothic Light', 'Arial Narrow', Arial;    
         font-weight: 300;
         box-sizing: border-box;            
-        color: white;                                              
     }
 
     a, a:hover, a:visited, a:active, a:focus {

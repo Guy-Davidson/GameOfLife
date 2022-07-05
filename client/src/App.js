@@ -30,24 +30,40 @@ exports.queryClient = void 0;
 const jsx_runtime_1 = require("react/jsx-runtime");
 const react_1 = require("react");
 const styled_components_1 = __importStar(require("styled-components"));
-const Global_Styled_1 = __importDefault(require("./Styles/Global.Styled"));
 const styled_components_2 = require("styled-components");
-const DarkTheme_1 = require("./Styles/DarkTheme");
+//@ts-ignore
+const Global_Styled_1 = __importDefault(require("./Styles/Global.Styled"));
+//@ts-ignore
+const Themes_1 = require("./Styles/Themes");
+const Themes_2 = require("./Styles/Themes");
 const react_query_1 = require("react-query");
-const MainAPI_1 = require("./API/MainAPI");
+//@ts-ignore
+const atoms_1 = require("./Atoms/atoms");
+const recoil_1 = require("recoil");
+const Header_1 = __importDefault(require("./Components/Header"));
+const Popup_1 = __importDefault(require("./Components/Popup"));
+const Explain_1 = __importDefault(require("./Components/Explain"));
+const Board_1 = __importDefault(require("./Components/Board"));
+const Controller_1 = __importDefault(require("./Components/Controller"));
 exports.queryClient = new react_query_1.QueryClient();
 const App = () => {
-    return ((0, jsx_runtime_1.jsx)(react_query_1.QueryClientProvider, Object.assign({ client: exports.queryClient }, { children: (0, jsx_runtime_1.jsxs)(styled_components_2.ThemeProvider, Object.assign({ theme: DarkTheme_1.DarkTheme }, { children: [(0, jsx_runtime_1.jsx)(Global_Styled_1.default, {}), (0, jsx_runtime_1.jsxs)(StyledApp, { children: ["This is an App", (0, jsx_runtime_1.jsx)(TestComp, {})] })] })) })));
-};
-const TestComp = () => {
-    const test = (0, MainAPI_1.GetTestQuery)(99);
-    (0, react_1.useEffect)(() => {
-        console.log("initing App");
-    }, []);
-    return ((0, jsx_runtime_1.jsx)(jsx_runtime_1.Fragment, { children: test.isSuccess &&
-            (0, jsx_runtime_1.jsx)("div", { children: `Test came back ok with number: ${test.data}` }) }));
+    const [theme, setTheme] = (0, react_1.useState)(Themes_1.DarkTheme);
+    const [isExplainActive, setIsExplainActive] = (0, recoil_1.useRecoilState)(atoms_1.ExplainAtom);
+    const handleThemeClick = (themeId) => {
+        themeId === 'dark' ? setTheme(Themes_1.DarkTheme) : setTheme(Themes_2.LightTheme);
+    };
+    const handleExplainClick = () => {
+        setIsExplainActive(prev => !prev);
+    };
+    return ((0, jsx_runtime_1.jsx)(react_query_1.QueryClientProvider, Object.assign({ client: exports.queryClient }, { children: (0, jsx_runtime_1.jsxs)(styled_components_2.ThemeProvider, Object.assign({ theme: theme }, { children: [(0, jsx_runtime_1.jsx)(Global_Styled_1.default, {}), (0, jsx_runtime_1.jsxs)(StyledApp, { children: [(0, jsx_runtime_1.jsx)(Header_1.default, { handleThemeClick: handleThemeClick, handleExplainClick: handleExplainClick, theme: theme }), (0, jsx_runtime_1.jsx)(Board_1.default, {}), (0, jsx_runtime_1.jsx)(Controller_1.default, {}), isExplainActive &&
+                            (0, jsx_runtime_1.jsx)(Popup_1.default, { children: (0, jsx_runtime_1.jsx)(Explain_1.default, {}) })] })] })) })));
 };
 const StyledApp = styled_components_1.default.div `
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
     background-color: ${props => props.theme.App.backgroundColor.main};
+    color: ${props => props.theme.App.fontColor.main};
 `;
 exports.default = (0, styled_components_1.withTheme)(App);
