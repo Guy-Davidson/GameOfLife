@@ -5,6 +5,11 @@ export const ExplainAtom = atom({
     default: false
 })
 
+export const DiedAtom = atom({
+    key: 'DiedAtom',
+    default: false
+})
+
 export const GameIDAtom = atom({
     key: 'GameIDAtom',
     default: ''

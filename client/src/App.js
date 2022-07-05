@@ -45,10 +45,12 @@ const Popup_1 = __importDefault(require("./Components/Popup"));
 const Explain_1 = __importDefault(require("./Components/Explain"));
 const Board_1 = __importDefault(require("./Components/Board"));
 const Controller_1 = __importDefault(require("./Components/Controller"));
+const Died_1 = __importDefault(require("./Components/Died"));
 exports.queryClient = new react_query_1.QueryClient();
 const App = () => {
     const [theme, setTheme] = (0, react_1.useState)(Themes_1.DarkTheme);
     const [isExplainActive, setIsExplainActive] = (0, recoil_1.useRecoilState)(atoms_1.ExplainAtom);
+    const [isDiedActive, setIsDiedActive] = (0, recoil_1.useRecoilState)(atoms_1.DiedAtom);
     const handleThemeClick = (themeId) => {
         themeId === 'dark' ? setTheme(Themes_1.DarkTheme) : setTheme(Themes_2.LightTheme);
     };
@@ -56,7 +58,8 @@ const App = () => {
         setIsExplainActive(prev => !prev);
     };
     return ((0, jsx_runtime_1.jsx)(react_query_1.QueryClientProvider, Object.assign({ client: exports.queryClient }, { children: (0, jsx_runtime_1.jsxs)(styled_components_2.ThemeProvider, Object.assign({ theme: theme }, { children: [(0, jsx_runtime_1.jsx)(Global_Styled_1.default, {}), (0, jsx_runtime_1.jsxs)(StyledApp, { children: [(0, jsx_runtime_1.jsx)(Header_1.default, { handleThemeClick: handleThemeClick, handleExplainClick: handleExplainClick, theme: theme }), (0, jsx_runtime_1.jsx)(Board_1.default, {}), (0, jsx_runtime_1.jsx)(Controller_1.default, {}), isExplainActive &&
-                            (0, jsx_runtime_1.jsx)(Popup_1.default, { children: (0, jsx_runtime_1.jsx)(Explain_1.default, {}) })] })] })) })));
+                            (0, jsx_runtime_1.jsx)(Popup_1.default, { children: (0, jsx_runtime_1.jsx)(Explain_1.default, {}) }), isDiedActive &&
+                            (0, jsx_runtime_1.jsx)(Popup_1.default, { children: (0, jsx_runtime_1.jsx)(Died_1.default, {}) })] })] })) })));
 };
 const StyledApp = styled_components_1.default.div `
     width: 100vw;

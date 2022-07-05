@@ -33,6 +33,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const jsx_runtime_1 = require("react/jsx-runtime");
+const react_1 = require("react");
 const styled_components_1 = __importStar(require("styled-components"));
 const uuid_1 = require("uuid");
 const recoil_1 = require("recoil");
@@ -40,11 +41,24 @@ const atoms_1 = require("../Atoms/atoms");
 const MainAPI_1 = require("../API/MainAPI");
 const App_1 = require("../App");
 const Controller = () => {
+    var _a;
     const [gameID, setGameID] = (0, recoil_1.useRecoilState)(atoms_1.GameIDAtom);
     const [isSettingUp, setIsSettingUp] = (0, recoil_1.useRecoilState)(atoms_1.IsSettingUpAtom);
     const [config, setConfig] = (0, recoil_1.useRecoilState)(atoms_1.ConfigAtom);
     const [isRunning, setIsRunning] = (0, recoil_1.useRecoilState)(atoms_1.IsRunningAtom);
+    const [isDiedActive, setIsDiedActive] = (0, recoil_1.useRecoilState)(atoms_1.DiedAtom);
     const boardState = (0, MainAPI_1.GetBoardStateQuery)(gameID, isSettingUp, isRunning);
+    (0, react_1.useEffect)(() => {
+        if (!boardState.isSuccess)
+            return;
+        let sum = boardState.data.board.reduce((acc, row) => {
+            return (acc + row.reduce((acc, cell) => acc + cell));
+        }, 0);
+        if (sum === 0) {
+            handleResetClick(true);
+            setIsDiedActive(true);
+        }
+    }, [(_a = boardState.data) === null || _a === void 0 ? void 0 : _a.gen]);
     const handleInitClick = () => __awaiter(void 0, void 0, void 0, function* () {
         let gameID = (0, uuid_1.v4)();
         let res = yield (0, MainAPI_1.PostNewGame)(gameID);
@@ -72,8 +86,8 @@ const Controller = () => {
             return;
         setIsRunning(false);
     };
-    const handleResetClick = () => {
-        if (isRunning)
+    const handleResetClick = (died) => {
+        if (isRunning && !died)
             return;
         setIsRunning(false);
         setConfig(new Array());
@@ -86,7 +100,7 @@ const Controller = () => {
                 (0, jsx_runtime_1.jsx)(jsx_runtime_1.Fragment, { children: isSettingUp ?
                         (0, jsx_runtime_1.jsxs)(SetupWrapper, { children: [(0, jsx_runtime_1.jsx)(Instraction, { children: "Click on the board to set the initial state" }), (0, jsx_runtime_1.jsx)(Button, Object.assign({ onClick: handleOKClick, isActive: config.length > 0 }, { children: "ok" }))] })
                         :
-                            (0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)(GenWrapper, { children: `Generations: ${boardState.isSuccess && boardState.data.gen}` }), (0, jsx_runtime_1.jsx)(Button, Object.assign({ isActive: !isRunning, onClick: handleNextClick }, { children: "next" })), (0, jsx_runtime_1.jsx)(Button, Object.assign({ isActive: !isRunning, onClick: handleStartClick }, { children: "start" })), (0, jsx_runtime_1.jsx)(Button, Object.assign({ isActive: isRunning, onClick: handleStopClick }, { children: "stop" })), (0, jsx_runtime_1.jsx)(Button, Object.assign({ isActive: !isRunning, onClick: handleResetClick }, { children: "reset" }))] }) }) }));
+                            (0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)(GenWrapper, { children: `Generations: ${boardState.isSuccess && boardState.data.gen}` }), (0, jsx_runtime_1.jsx)(Button, Object.assign({ isActive: !isRunning, onClick: handleNextClick }, { children: "next" })), (0, jsx_runtime_1.jsx)(Button, Object.assign({ isActive: !isRunning, onClick: handleStartClick }, { children: "start" })), (0, jsx_runtime_1.jsx)(Button, Object.assign({ isActive: isRunning, onClick: handleStopClick }, { children: "stop" })), (0, jsx_runtime_1.jsx)(Button, Object.assign({ isActive: !isRunning, onClick: () => handleResetClick(false) }, { children: "reset" }))] }) }) }));
 };
 const StyledController = styled_components_1.default.div `
     width: 80%;
@@ -129,5 +143,6 @@ const Instraction = styled_components_1.default.div `
 `;
 const GenWrapper = styled_components_1.default.div `
     font-size: 1.6rem;
+    width: 25%;
 `;
 exports.default = Controller;

@@ -11,7 +11,7 @@ import { LightTheme } from './Styles/Themes'
 import { QueryClientProvider, QueryClient } from 'react-query'
 
 //@ts-ignore
-import { ExplainAtom } from './Atoms/atoms'
+import { ExplainAtom, DiedAtom } from './Atoms/atoms'
 
 import { useRecoilState } from 'recoil'
 
@@ -20,12 +20,14 @@ import Popup from './Components/Popup'
 import Explain from './Components/Explain'
 import Board from './Components/Board'
 import Controller from './Components/Controller'
+import Died from './Components/Died'
 
 export const queryClient = new QueryClient()
 
 const App: React.FC = () => {
     const [theme, setTheme] = useState(DarkTheme)
     const [isExplainActive, setIsExplainActive] = useRecoilState(ExplainAtom)
+    const [isDiedActive, setIsDiedActive] = useRecoilState(DiedAtom)
 
     const handleThemeClick = (themeId: string) => {
         themeId === 'dark' ? setTheme(DarkTheme) : setTheme(LightTheme)
@@ -52,6 +54,11 @@ const App: React.FC = () => {
                                 <Explain />
                             </Popup>
                         }
+                        {isDiedActive && 
+                            <Popup>
+                                <Died />
+                            </Popup>
+                        }                        
                     </StyledApp>           
             </ThemeProvider>        
         </QueryClientProvider>

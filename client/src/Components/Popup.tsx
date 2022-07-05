@@ -14,7 +14,7 @@ const Popup: React.FC<Props> = (props) => {
 }
 
 const StyledPopup = styled.div`
-    height: 80vh;
+    height: 70vh;
     width: 50vw;
     position: absolute;
     top: 10vh;

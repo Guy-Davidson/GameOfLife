@@ -9,7 +9,7 @@ const Popup = (props) => {
     return ((0, jsx_runtime_1.jsx)(StyledPopup, { children: props.children }));
 };
 const StyledPopup = styled_components_1.default.div `
-    height: 80vh;
+    height: 70vh;
     width: 50vw;
     position: absolute;
     top: 10vh;

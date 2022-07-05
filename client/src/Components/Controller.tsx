@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled, { css } from "styled-components"
 import { v4 as uuid } from 'uuid';
 
 import { useRecoilState } from "recoil"
-import { GameIDAtom, IsSettingUpAtom, ConfigAtom, IsRunningAtom } from "../Atoms/atoms"
+import { GameIDAtom, IsSettingUpAtom, ConfigAtom, IsRunningAtom, DiedAtom } from "../Atoms/atoms"
 
 import { PostNewGame, PostGameConfig, DeleteGame, GetBoardStateQuery } from "../API/MainAPI";
 
@@ -14,8 +14,23 @@ const Controller: React.FC = () => {
     const [isSettingUp, setIsSettingUp] = useRecoilState(IsSettingUpAtom)
     const [config, setConfig] = useRecoilState(ConfigAtom)
     const [isRunning, setIsRunning] = useRecoilState(IsRunningAtom)
+    const [isDiedActive, setIsDiedActive] = useRecoilState(DiedAtom)
 
     const boardState = GetBoardStateQuery(gameID, isSettingUp, isRunning)
+
+    useEffect(() => {
+        if(!boardState.isSuccess) return
+
+        let sum = boardState.data.board.reduce((acc: number, row: number[]) => {
+            return (acc + row.reduce((acc, cell) => acc + cell))
+        }, 0) 
+
+        if(sum === 0) {
+            handleResetClick(true)
+            setIsDiedActive(true)
+        }
+
+    }, [boardState.data?.gen])
 
     const handleInitClick = async () => {
         let gameID = uuid()
@@ -48,8 +63,8 @@ const Controller: React.FC = () => {
         setIsRunning(false)
     }
 
-    const handleResetClick = () => {
-        if(isRunning) return 
+    const handleResetClick = (died: boolean) => {
+        if(isRunning && !died) return 
         setIsRunning(false)
         setConfig(new Array())
         setGameID('')
@@ -73,7 +88,7 @@ const Controller: React.FC = () => {
                 <Button isActive={!isRunning} onClick={handleNextClick}>next</Button>
                 <Button isActive={!isRunning} onClick={handleStartClick}>start</Button>
                 <Button isActive={isRunning} onClick={handleStopClick}>stop</Button>
-                <Button isActive={!isRunning} onClick={handleResetClick}>reset</Button>
+                <Button isActive={!isRunning} onClick={() => handleResetClick(false)}>reset</Button>
                 </>
             }
 
@@ -131,6 +146,7 @@ const Instraction = styled.div`
 
 const GenWrapper = styled.div`
     font-size: 1.6rem;
+    width: 25%;
 `
 
 export default Controller
