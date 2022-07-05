@@ -9,7 +9,7 @@ const Square_1 = __importDefault(require("./Square"));
 const Board = () => {
     return ((0, jsx_runtime_1.jsx)(StyledBoard, { children: (new Array(50).fill(0).map((e, i) => {
             return ((0, jsx_runtime_1.jsx)(Row, { children: new Array(50).fill(0).map((e, j) => {
-                    return ((0, jsx_runtime_1.jsx)(Square_1.default, {}, `${i},${j}`));
+                    return ((0, jsx_runtime_1.jsx)(Square_1.default, { i: i, j: j }, `${i},${j}`));
                 }) }, `r${i}`));
         })) }));
 };

@@ -9,7 +9,7 @@ export const DarkTheme = {
             sec: '#0f0909'
         },
         shadow: {
-            s: '0px 6px 7px 6px rgba(256,256,256,0.26)',
+            s: '0px 2px 2px 2px rgba(256,256,256,0.26)',
             m: '0px 6px 7px 6px rgba(256,256,256,0.26)',
             l: '0px 6px 7px 6px rgba(256,256,256,0.26)',
         },
@@ -27,6 +27,17 @@ export const DarkTheme = {
     Board: {
         dividerColor: {
             main: 'rgba(256,256,256,0.1)'
+        },
+        Square: {
+            backgroundColor: {
+                active: 'rgba(15, 193, 167, .75)',
+                hover: 'rgba(15, 193, 167, .1)',
+            }
+        }
+    },
+    Button: {
+        backgroundColor: {
+            main: '#0fc1a7',
         }
     }
 }
@@ -42,7 +53,7 @@ export const LightTheme = {
             sec: '#f4f6fa'
         },
         shadow: {
-            s: '0px 6px 7px 6px rgba(0,0,0,0.26)',
+            s: '0px 2px 2px 2px rgba(0,0,0,0.26)',
             m: '0px 6px 7px 6px rgba(0,0,0,0.26)',
             l: '0px 6px 7px 6px rgba(0,0,0,0.26)',
         },
@@ -60,6 +71,17 @@ export const LightTheme = {
     Board: {
         dividerColor: {
             main: '#ccc'
+        },
+        Square: {
+            backgroundColor: {
+                active: 'rgba(15, 193, 167, .75)',
+                hover: 'rgba(15, 193, 167, .1)',
+            }
+        }
+    },
+    Button: {
+        backgroundColor: {
+            main: '#0fc1a7',
         }
     }
 }

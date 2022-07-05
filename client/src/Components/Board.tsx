@@ -10,7 +10,7 @@ const Board: React.FC = () => {
                     <Row key={`r${i}`}>
                         {new Array(50).fill(0).map((e, j) => {
                             return (
-                                <Square key={`${i},${j}`} />
+                                <Square key={`${i},${j}`} i={i} j={j}/>
                             )
                         })}
                     </Row>
