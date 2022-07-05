@@ -15,6 +15,11 @@ export const IsSettingUpAtom = atom({
     default: false
 })
 
+export const IsRunningAtom = atom({
+    key: 'IsRunningAtom',
+    default: false
+})
+
 export const ConfigAtom = atom({
     key: 'ConfigAtom',
     default: new Array()

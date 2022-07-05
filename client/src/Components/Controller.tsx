@@ -1,8 +1,9 @@
+import { useState } from "react";
 import styled, { css } from "styled-components"
 import { v4 as uuid } from 'uuid';
 
 import { useRecoilState } from "recoil"
-import { GameIDAtom, IsSettingUpAtom, ConfigAtom } from "../Atoms/atoms"
+import { GameIDAtom, IsSettingUpAtom, ConfigAtom, IsRunningAtom } from "../Atoms/atoms"
 
 import { PostNewGame, PostGameConfig, GetBoardStateQuery } from "../API/MainAPI";
 
@@ -12,8 +13,10 @@ const Controller: React.FC = () => {
     const [gameID, setGameID] = useRecoilState(GameIDAtom)
     const [isSettingUp, setIsSettingUp] = useRecoilState(IsSettingUpAtom)
     const [config, setConfig] = useRecoilState(ConfigAtom)
+    const [isRunning, setIsRunning] = useRecoilState(IsRunningAtom)
 
-    const boardState = GetBoardStateQuery(gameID, isSettingUp)
+
+    const boardState = GetBoardStateQuery(gameID, isSettingUp, isRunning)
 
     const handleInitClick = async () => {
         let gameID = uuid()
@@ -32,7 +35,25 @@ const Controller: React.FC = () => {
     }
 
     const handleNextClick = () => {
+        if(isRunning) return 
+
         queryClient.refetchQueries(['BoardState', gameID])
+    }
+
+    const handleStartClick = () => {
+        setIsRunning(true)
+    }
+
+    const handleStopClick = () => {
+        if(!isRunning) return 
+        setIsRunning(false)
+    }
+
+    const handleResetClick = () => {
+        if(isRunning) return 
+        setIsRunning(false)
+        setConfig(new Array())
+        setGameID('')
     }
 
     return (
@@ -48,10 +69,10 @@ const Controller: React.FC = () => {
                 </SetupWrapper>                
             :
                 <>
-                <Button onClick={handleNextClick}>next</Button>
-                <Button>start</Button>
-                <Button>stop</Button>
-                <Button>reset</Button>
+                <Button isActive={!isRunning} onClick={handleNextClick}>next</Button>
+                <Button isActive={!isRunning} onClick={handleStartClick}>start</Button>
+                <Button isActive={isRunning} onClick={handleStopClick}>stop</Button>
+                <Button isActive={!isRunning} onClick={handleResetClick}>reset</Button>
                 </>
             }
 
@@ -78,6 +99,7 @@ const Button = styled.div<ButtonProps>`
     border-radius: 4px;
     padding: .5rem 2rem;
     font-size: 1.6rem;
+    user-select: none;
     
     box-shadow: ${props => props.theme.App.shadow.s};
     cursor: pointer;

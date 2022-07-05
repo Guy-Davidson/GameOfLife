@@ -7,7 +7,7 @@ const handleError = e => console.log(e)
 // export const API_ROOT_PATH = '';
 export const API_ROOT_PATH = 'http://localhost:5000';
 
-export const GetBoardStateQuery = (gameID, isSettingUp) => {
+export const GetBoardStateQuery = (gameID, isSettingUp, isRunning) => {
     return (
         useQuery(['BoardState', gameID], () => 
             axios
@@ -20,6 +20,7 @@ export const GetBoardStateQuery = (gameID, isSettingUp) => {
                 cacheTime: 5000,
                 enabled: Boolean(gameID) && !isSettingUp,
                 retry: 3,
+                refetchInterval: isRunning ? 1000 : false
             }
         )
     )

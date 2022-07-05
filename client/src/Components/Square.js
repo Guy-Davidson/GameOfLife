@@ -31,9 +31,10 @@ const MainAPI_1 = require("../API/MainAPI");
 const Square = (props) => {
     const { i, j } = props;
     const [isSettingUp, setIsSettingUp] = (0, recoil_1.useRecoilState)(atoms_1.IsSettingUpAtom);
+    const [isRunning, setIsRunning] = (0, recoil_1.useRecoilState)(atoms_1.IsRunningAtom);
     const [config, setConfig] = (0, recoil_1.useRecoilState)(atoms_1.ConfigAtom);
     const [gameID, setGameID] = (0, recoil_1.useRecoilState)(atoms_1.GameIDAtom);
-    const boardState = (0, MainAPI_1.GetBoardStateQuery)(gameID, isSettingUp);
+    const boardState = (0, MainAPI_1.GetBoardStateQuery)(gameID, isSettingUp, isRunning);
     return ((0, jsx_runtime_1.jsx)(StyledSquare, { onClick: () => {
             if (isSettingUp) {
                 setConfig(prev => config.some(s => s[0] === i && s[1] === j) ?

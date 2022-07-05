@@ -43,7 +43,8 @@ const Controller = () => {
     const [gameID, setGameID] = (0, recoil_1.useRecoilState)(atoms_1.GameIDAtom);
     const [isSettingUp, setIsSettingUp] = (0, recoil_1.useRecoilState)(atoms_1.IsSettingUpAtom);
     const [config, setConfig] = (0, recoil_1.useRecoilState)(atoms_1.ConfigAtom);
-    const boardState = (0, MainAPI_1.GetBoardStateQuery)(gameID, isSettingUp);
+    const [isRunning, setIsRunning] = (0, recoil_1.useRecoilState)(atoms_1.IsRunningAtom);
+    const boardState = (0, MainAPI_1.GetBoardStateQuery)(gameID, isSettingUp, isRunning);
     const handleInitClick = () => __awaiter(void 0, void 0, void 0, function* () {
         let gameID = (0, uuid_1.v4)();
         let res = yield (0, MainAPI_1.PostNewGame)(gameID);
@@ -59,7 +60,24 @@ const Controller = () => {
         }
     });
     const handleNextClick = () => {
+        if (isRunning)
+            return;
         App_1.queryClient.refetchQueries(['BoardState', gameID]);
+    };
+    const handleStartClick = () => {
+        setIsRunning(true);
+    };
+    const handleStopClick = () => {
+        if (!isRunning)
+            return;
+        setIsRunning(false);
+    };
+    const handleResetClick = () => {
+        if (isRunning)
+            return;
+        setIsRunning(false);
+        setConfig(new Array());
+        setGameID('');
     };
     return ((0, jsx_runtime_1.jsx)(StyledController, { children: !gameID ?
             (0, jsx_runtime_1.jsx)(Button, Object.assign({ onClick: handleInitClick }, { children: "Setup a new Game" }))
@@ -67,7 +85,7 @@ const Controller = () => {
                 (0, jsx_runtime_1.jsx)(jsx_runtime_1.Fragment, { children: isSettingUp ?
                         (0, jsx_runtime_1.jsxs)(SetupWrapper, { children: [(0, jsx_runtime_1.jsx)(Instraction, { children: "Click on the board to set the initial state" }), (0, jsx_runtime_1.jsx)(Button, Object.assign({ onClick: handleOKClick, isActive: config.length > 0 }, { children: "ok" }))] })
                         :
-                            (0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)(Button, Object.assign({ onClick: handleNextClick }, { children: "next" })), (0, jsx_runtime_1.jsx)(Button, { children: "start" }), (0, jsx_runtime_1.jsx)(Button, { children: "stop" }), (0, jsx_runtime_1.jsx)(Button, { children: "reset" })] }) }) }));
+                            (0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)(Button, Object.assign({ isActive: !isRunning, onClick: handleNextClick }, { children: "next" })), (0, jsx_runtime_1.jsx)(Button, Object.assign({ isActive: !isRunning, onClick: handleStartClick }, { children: "start" })), (0, jsx_runtime_1.jsx)(Button, Object.assign({ isActive: isRunning, onClick: handleStopClick }, { children: "stop" })), (0, jsx_runtime_1.jsx)(Button, Object.assign({ isActive: !isRunning, onClick: handleResetClick }, { children: "reset" }))] }) }) }));
 };
 const StyledController = styled_components_1.default.div `
     width: 80%;
@@ -81,6 +99,7 @@ const Button = styled_components_1.default.div `
     border-radius: 4px;
     padding: .5rem 2rem;
     font-size: 1.6rem;
+    user-select: none;
     
     box-shadow: ${props => props.theme.App.shadow.s};
     cursor: pointer;
